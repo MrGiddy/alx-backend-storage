@@ -36,7 +36,7 @@ At the end of this project, you are expected to be able to explain to anyone, wi
 
 # More Info
 ### Comments for your SQL file:
-```
+```sh
 $ cat my_script.sql
 -- 3 first students in the Batch ID=3
 -- because Batch 3 is the best!
