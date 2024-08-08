@@ -355,7 +355,7 @@ Write a SQL script that creates a stored procedure ```AddBonus``` that adds a ne
     * ```project_name```, a new or already exists ```projects``` - if no ```projects.name``` found in the table, you should create it
     * ```score```, the score value for the correction
 
-**Context**: Write code in SQL is a nice level up!
+**Context**: _Write code in SQL is a nice level up!_
 ```sh
 bob@dylan:~$ cat 6-init.sql
 -- Initial
