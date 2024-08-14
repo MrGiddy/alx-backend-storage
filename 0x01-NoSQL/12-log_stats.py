@@ -13,7 +13,7 @@ def nginx_logs_stats(log_collections):
     methods = ['GET', 'POST', 'PUT', 'PATCH', 'DELETE']
     for method in methods:
         count = log_collections.count_documents({"method": method})
-        print('\t', f'method {method}: {count}')
+        print(f'\tmethod {method}: {count}')
 
     count = log_collections.count_documents(
         {"method": "GET", "path": "/status"}
