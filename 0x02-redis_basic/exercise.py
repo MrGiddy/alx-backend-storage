@@ -2,7 +2,7 @@
 """Implements a simple cache using Redis DB"""
 import redis
 import uuid
-from typing import Union, Callable, Any, Optional
+from typing import Union, Callable, Any
 from functools import wraps
 
 
@@ -17,6 +17,20 @@ def count_calls(method: Callable) -> Callable:
     return wrapper
 
 
+def call_history(method: Callable) -> Callable:
+    """stores a function's history of inputs and outputs"""
+    @wraps(method)
+    def wrapper(self, *args, **kwargs) -> Any:
+        inputs_key = f'{method.__qualname__}:inputs'
+        outputs_key = f'{method.__qualname__}:outputs'
+        output = method(self, *args, **kwargs)
+        if isinstance(self._redis, redis.Redis):
+            self._redis.rpush(inputs_key, str(args))
+            self._redis.rpush(outputs_key, output)
+        return output
+    return wrapper
+
+
 class Cache():
     """Represents a cache object"""
 
@@ -25,6 +39,7 @@ class Cache():
         self._redis = redis.Redis()
         self._redis.flushdb(True)
 
+    @call_history
     @count_calls
     def store(self, data: Union[str, bytes, int, float]) -> str:
         """stores cache data into a Redis DB"""
