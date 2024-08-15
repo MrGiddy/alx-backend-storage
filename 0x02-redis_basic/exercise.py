@@ -41,4 +41,4 @@ class Cache():
         retreives data from Redis,
         converts it to int and returns it
         """
-        return self.get(key, fn=lambda d: d.decode('utf-8'))
+        return self.get(key, fn=lambda d: int(d))
