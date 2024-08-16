@@ -31,6 +31,31 @@ def call_history(method: Callable) -> Callable:
     return wrapper
 
 
+def replay(method: Callable) -> None:
+    """displays the history of calls of a function"""
+    if method is None or not hasattr(method, '__self__'):
+        return
+    # Make keys for inputs and outputs lists
+    inputs_key = f'{method.__qualname__}:inputs'
+    outputs_key = f'{method.__qualname__}:outputs'
+    # Retrieve the inputs and outputs from db
+    instance = method.__self__
+    redis_client = instance._redis
+    if not isinstance(redis_client, redis.Redis):
+        return
+    inputs = redis_client.lrange(inputs_key, 0, -1)
+    outputs = redis_client.lrange(outputs_key, 0, -1)
+    # Display how many times method was called
+    meth_qual_name = method.__qualname__
+    method_calls = instance.get_int(meth_qual_name)
+    print(f'{meth_qual_name} was called {method_calls} times:')
+    # Iterate over input and output and display them
+    for i, o in zip(inputs, outputs):
+        input_tuple = i.decode('utf-8')
+        output_val = o.decode('utf-8')
+        print(f'{meth_qual_name}(*{input_tuple}) -> {output_val}')
+
+
 class Cache():
     """Represents a cache object"""
 
